@@ -16,8 +16,8 @@ SolidCompression=yes
 Name: "hebrew"; MessagesFile: "compiler:Languages\Hebrew.isl"
 
 [Files]
-; === שנה את הנתיב הזה לנתיב של תיקיית ה-Publish שיצרת ב-Visual Studio ===
-Source: "D:\Users\sdwac\source\repos\DictaNakdanVsto\DictaNakdanVsto\publish*"; DestDir: "{app}\InstallFiles"; Flags: ignoreversion recursesubdirs createallsubdirs
+; נתיב יחסי שמתחיל מתיקיית הסקריפט
+Source: "DictaNakdanVsto\publish\*"; DestDir: "{app}\InstallFiles"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Run]
 ; מריץ את ההתקנה של VSTO שקופה ברקע כשההתקנה מסתיימת

@@ -1,6 +1,20 @@
+## Visual Studio Temp Files
 .vs/
 bin/
 obj/
 *.user
 *.suo
-Publish/
+*.userosscache
+*.sln.docstates
+
+## VSTO & Publishing
+publish/
+*.publish/
+DictaNakdanVsto/DictaNakdanVsto_TemporaryKey.pfx
+
+## NuGet Packages
+packages/
+!packages/repositories.config
+
+## Inno Setup Outputs
+InnoSetupOutput/
