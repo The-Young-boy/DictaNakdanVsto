@@ -2,7 +2,7 @@
 using Word = Microsoft.Office.Interop.Word;
 using Office = Microsoft.Office.Core;
 using DictaNakdanVsto.Views;
-using DictaNakdanVsto.ViewModels; // קריטי כדי לגשת למוח המערכת
+using DictaNakdanVsto.ViewModels;
 
 namespace DictaNakdanVsto
 {
@@ -10,7 +10,6 @@ namespace DictaNakdanVsto
     {
         public Microsoft.Office.Tools.CustomTaskPane NakdanTaskPane;
 
-        // מחלקת עזר פנימית שממירה את ה-PNG של הלוגו לפורמט שוורד מבין
         internal class PictureDispConverter : System.Windows.Forms.AxHost
         {
             private PictureDispConverter() : base("") { }
@@ -25,7 +24,7 @@ namespace DictaNakdanVsto
             var myHost = new NakdanTaskPaneHost();
             NakdanTaskPane = this.CustomTaskPanes.Add(myHost, "נקדן דיקטה");
             NakdanTaskPane.Width = 360;
-            NakdanTaskPane.Visible = false; // בהתחלה מוסתר
+            NakdanTaskPane.Visible = false;
 
             this.Application.WindowBeforeRightClick += Application_WindowBeforeRightClick;
         }
@@ -34,7 +33,6 @@ namespace DictaNakdanVsto
         {
             Office.CommandBar contextMenu = this.Application.CommandBars["Text"];
 
-            // מחיקת כפתורים ישנים כדי למנוע כפילויות
             foreach (Office.CommandBarControl ctrl in contextMenu.Controls)
             {
                 if (ctrl.Caption == "נקד באמצעות נקדן דיקטה") ctrl.Delete();
@@ -46,22 +44,20 @@ namespace DictaNakdanVsto
             customButton.Caption = "נקד באמצעות נקדן דיקטה";
             customButton.Tag = "DictaNakdanBtn";
 
-            // משיכת הלוגו שהוספת ממשאבי הפרויקט
             try
             {
                 customButton.Picture = PictureDispConverter.ToIPictureDisp(Properties.Resources.icon_16);
             }
-            catch { /* במידה והלוגו לא נמצא, הכפתור יופיע פשוט ללא תמונה */ }
+            catch { }
 
-            // פעולת הלחיצה
             customButton.Click += (Office.CommandBarButton Ctrl, ref bool CancelDefault) =>
             {
-                // 1. פותח את החלונית אם היא סגורה
                 NakdanTaskPane.Visible = true;
 
-                // 2. מפעיל את הניקוד באופן אוטומטי (שולף את ה-ViewModel ומפעיל את הפקודה)
+                // התיקון: שולפים את ה-ElementHost מתוך פקדי ה-Host
                 var host = (NakdanTaskPaneHost)NakdanTaskPane.Control;
-                var view = (NakdanView)host.Child;
+                var elementHost = (System.Windows.Forms.Integration.ElementHost)host.Controls[0];
+                var view = (NakdanView)elementHost.Child;
                 var vm = (NakdanViewModel)view.DataContext;
 
                 if (vm.PunctuateCommand.CanExecute(null))
