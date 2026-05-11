@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading; // ספרייה שנוספה לניהול תהליכים
 using DictaNakdanVsto.Models;
 using DictaNakdanVsto.Services;
 using Newtonsoft.Json;
@@ -26,10 +27,14 @@ namespace DictaNakdanVsto.ViewModels
     {
         private readonly DictaApiService _apiService = new DictaApiService();
         private readonly DictaInteropService _interopService = new DictaInteropService();
+        private readonly Dispatcher _dispatcher; // שומר את התהליך הראשי של הממשק
         private string _settingsPath;
 
         public NakdanViewModel()
         {
+            // לוכד את התהליך הראשי כשהתוסף עולה
+            _dispatcher = Dispatcher.CurrentDispatcher;
+
             _settingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DictaNakdanVsto", "settings.json");
             LoadSettings();
 
@@ -41,6 +46,13 @@ namespace DictaNakdanVsto.ViewModels
             CancelManualModeCommand = new RelayCommand((o) => { IsManualMode = false; IsOptionsMode = true; });
             ApplyManualModeCommand = new RelayCommand(async (o) => await ApplyManualModeAsync());
             SetNikudCommand = new RelayCommand(ApplyNikudToLetter);
+        }
+
+        // פונקציית קסם שדואגת שכל שינוי בממשק יקרה בתהליך המותר ולא יקריס את המערכת
+        private void RunOnUI(Action action)
+        {
+            if (_dispatcher.CheckAccess()) action();
+            else _dispatcher.Invoke(action);
         }
 
         private bool _isProcessing, _isOptionsMode, _isManualMode;
@@ -72,13 +84,10 @@ namespace DictaNakdanVsto.ViewModels
             set
             {
                 _selectedLetter = value;
-                OnPropertyChanged(""); // מרענן את כל מסך המקלדת במעבר אות
+                OnPropertyChanged("");
             }
         }
 
-        // ==================================================================================
-        // === לוגיקת המקלדת המפוצלת החדשה: דגש/שין בנפרד, ותנועות למטה מגיבות אליהם ===
-        // ==================================================================================
         public string CurrentBaseLetter => SelectedLetter?.Base ?? " ";
         public string CurrentBaseWithModifiers => CurrentBaseLetter + (SelectedLetter?.SinDot ?? "") + (SelectedLetter?.Dagesh ?? "");
 
@@ -98,12 +107,10 @@ namespace DictaNakdanVsto.ViewModels
         public string KbHatafPatach => CurrentBaseWithModifiers + "\u05B2";
         public string KbHatafSegol => CurrentBaseWithModifiers + "\u05B1";
 
-        // משתנים שמדווחים לעיצוב ה-XAML אם הכפתור פעיל (כדי "להדליק" אותו)
         public bool IsDageshActive => !string.IsNullOrEmpty(SelectedLetter?.Dagesh);
         public bool IsShinActive => SelectedLetter?.SinDot == "\u05C1";
         public bool IsSinActive => SelectedLetter?.SinDot == "\u05C2";
         public bool IsShinLetter => CurrentBaseLetter == "ש";
-        // ==================================================================================
 
         public DictaRequest ApiSettings { get; set; } = new DictaRequest();
 
@@ -138,28 +145,36 @@ namespace DictaNakdanVsto.ViewModels
 
                 StatusMessage = "מנקד מול שרתי דיקטה...";
                 var sentences = _apiService.SplitToSentences(text);
-                _sessionTokens = new List<DictaToken>();
+                var tempTokens = new List<DictaToken>();
 
                 foreach (var sentence in sentences)
                 {
-                    _sessionTokens.AddRange(await _apiService.GetNakdanAsync(sentence, ApiSettings));
+                    tempTokens.AddRange(await _apiService.GetNakdanAsync(sentence, ApiSettings));
                 }
 
-                if (_sessionTokens.Count == 0)
+                // לאחר שסיימנו למשוך מהשרת ברקע, אנו חוזרים לתהליך הראשי (UI) כדי לא להקריס
+                RunOnUI(() =>
                 {
-                    System.Windows.Forms.MessageBox.Show("השרת לא החזיר תוצאות לניקוד.", "מידע", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
-                    FinishPunctuation();
-                    return;
-                }
+                    _sessionTokens = tempTokens;
 
-                _interopService.StartUndoRecord();
-                _currentIndex = 0;
-                ProcessNextWord();
+                    if (_sessionTokens.Count == 0)
+                    {
+                        System.Windows.Forms.MessageBox.Show("השרת לא החזיר תוצאות לניקוד.", "מידע", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+                        FinishPunctuation();
+                        return;
+                    }
+
+                    _interopService.StartUndoRecord();
+                    _currentIndex = 0;
+                    ProcessNextWord();
+                });
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"אירעה שגיאה:\n{ex.Message}", "שגיאה", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                FinishPunctuation();
+                RunOnUI(() => {
+                    System.Windows.Forms.MessageBox.Show($"אירעה שגיאה:\n{ex.Message}", "שגיאה", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    FinishPunctuation();
+                });
             }
         }
 
@@ -219,12 +234,14 @@ namespace DictaNakdanVsto.ViewModels
             StatusMessage = "ממשיך...";
 
             await Task.Delay(50);
-            ProcessNextWord();
+
+            // חוזרים לתהליך הראשי אחרי ה-Delay
+            RunOnUI(() => ProcessNextWord());
         }
 
         private void FinishPunctuation()
         {
-            _interopService.EndUndoRecord();
+            if (_interopService != null) _interopService.EndUndoRecord();
             IsOptionsMode = false;
             IsManualMode = false;
             IsProcessing = false;
@@ -260,13 +277,11 @@ namespace DictaNakdanVsto.ViewModels
 
             int index = ManualLetters.IndexOf(SelectedLetter);
 
-            // לא מתקדם אם הלחיצה הייתה על מודיפייר (דגש או ש'/שׂ') או מחיקה
             if (index >= 0 && index < ManualLetters.Count - 1 && symbol != "DAGESH" && symbol != "\u05C1" && symbol != "\u05C2" && symbol != "CLEAR")
             {
                 SelectedLetter = ManualLetters[index + 1];
             }
 
-            // צועק לממשק שירענן את כל המקלדת עם הנתונים העדכניים
             OnPropertyChanged("");
         }
 
