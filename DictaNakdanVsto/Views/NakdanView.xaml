@@ -1,0 +1,333 @@
+﻿<UserControl x:Class="DictaNakdanVsto.Views.NakdanView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DictaNakdanVsto.ViewModels"
+             FlowDirection="RightToLeft" Background="White" FontFamily="Segoe UI, Calibri, Arial, sans-serif">
+
+    <UserControl.Resources>
+        <local:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#106EBE"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryChipButton" TargetType="Button">
+            <Setter Property="Background" Value="#F3F2F1"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#D1D1D1"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E1DFDD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SmallActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#F3F2F1"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E1DFDD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="KeyboardPadButton" TargetType="Button">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#E1DFDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Opacity="0.05" BlurRadius="3" ShadowDepth="1" />
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F3F2F1"/>
+                    <Setter Property="BorderBrush" Value="#C8C6C4"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="KeyboardToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#E1DFDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Opacity="0.05" BlurRadius="3" ShadowDepth="1" />
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F3F2F1"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#CCE4F7"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#0078D4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,6"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="0,6"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <ScrollViewer Visibility="{Binding IsMainMode, Converter={StaticResource BoolToVis}}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,0,10">
+                <TextBlock Text="נקדן דיקטה" FontSize="28" FontWeight="Bold" Foreground="#0078D4" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                <Button Content="סמן ונקד (או לחץ לניקוד הפסקה)" Style="{StaticResource PrimaryButton}" Command="{Binding PunctuateCommand}" FontSize="18" Height="50" Margin="0,0,0,20"/>
+
+                <Expander Header="הגדרות ניקוד מלאות" FontWeight="SemiBold" FontSize="16">
+                    <StackPanel Margin="0,10,0,0">
+                        <TextBlock Text="סגנון טקסט:" FontWeight="Bold" Margin="0,5"/>
+                        <RadioButton Content="מודרני" IsChecked="{Binding IsGenreModern}"/>
+                        <RadioButton Content="רבני" IsChecked="{Binding IsGenreRabbinic}"/>
+                        <RadioButton Content="שירה מודרנית" IsChecked="{Binding IsGenrePoetry}"/>
+                        <Border BorderBrush="#E1DFDD" BorderThickness="0,1,0,0" Margin="0,10"/>
+
+                        <TextBlock Text="כללי ניקוד:" FontWeight="Bold" Margin="0,5"/>
+                        <CheckBox Content="ניקוד בכתיב מלא" IsChecked="{Binding ApiSettings.FullSpelling}"/>
+                        <CheckBox Content="ניקוד בקמץ קטן" IsChecked="{Binding ApiSettings.KeepQQ}"/>
+                        <CheckBox Content="השמטת דגש כבמקורות" IsChecked="{Binding ApiSettings.NoDageshDefMem}"/>
+                        <CheckBox Content='ניקוד "מה" בפתח+דגש' IsChecked="{Binding ApiSettings.PatachMa}"/>
+                        <CheckBox Content="שמור על מתגים" IsChecked="{Binding ApiSettings.KeepMetagim}"/>
+                        <CheckBox Content="לא להתחשב בניקוד מקורי" IsChecked="{Binding ApiSettings.IgnoreOriginal}"/>
+
+                        <Border BorderBrush="#E1DFDD" BorderThickness="0,1,0,0" Margin="0,10"/>
+                        <TextBlock Text="דלג על הניקוד באפשרויות הבאות:" FontWeight="Bold" Margin="0,5"/>
+                        <CheckBox Content="מילה מנוקדת" IsChecked="{Binding ApiSettings.SkipNikud}"/>
+                        <CheckBox Content="מילה מנוקדת חלקית" IsChecked="{Binding ApiSettings.SkipPartial}"/>
+                        <CheckBox Content="אות בודדת" IsChecked="{Binding ApiSettings.SkipSingle}"/>
+                        <CheckBox Content="ראשי תיבות" IsChecked="{Binding ApiSettings.SkipAcronyms}"/>
+                        <CheckBox Content="סוגריים עגולים ()" IsChecked="{Binding ApiSettings.SkipRound}"/>
+                        <CheckBox Content="סוגריים מרובעים []" IsChecked="{Binding ApiSettings.SkipSquare}"/>
+
+                        <Border BorderBrush="#E1DFDD" BorderThickness="0,1,0,0" Margin="0,10"/>
+                        <CheckBox Content="עצור לאישור בכל מילה" IsChecked="{Binding StopOnEveryWord}" FontWeight="Bold" Foreground="#0078D4"/>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Visibility="{Binding IsProcessing, Converter={StaticResource BoolToVis}}" VerticalAlignment="Center">
+            <TextBlock Text="{Binding StatusMessage}" FontSize="20" HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Visibility="{Binding IsOptionsMode, Converter={StaticResource BoolToVis}}">
+            <Grid Margin="0,0,0,20">
+                <Button Content="סיום/ביטול" Command="{Binding CancelCommand}" HorizontalAlignment="Right" Background="Transparent" Foreground="#D13438" BorderThickness="0" Cursor="Hand" FontWeight="Bold" FontSize="15"/>
+                <Button Content="עריכה ידנית ✍️" Command="{Binding ManualModeCommand}" Style="{StaticResource SmallActionButton}" HorizontalAlignment="Left" FontSize="15" FontWeight="SemiBold"/>
+            </Grid>
+            <TextBlock Text="{Binding CurrentWordStr}" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,25"/>
+            <ItemsControl ItemsSource="{Binding Level1Options}" Margin="0,0,0,15">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding CleanW}" Style="{StaticResource PrimaryButton}" FontSize="28" Margin="0,6" Height="65" Command="{Binding DataContext.SelectOptionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding CleanW}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding OtherOptions}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding CleanW}" Style="{StaticResource SecondaryChipButton}" Command="{Binding DataContext.SelectOptionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding CleanW}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <StackPanel Visibility="{Binding IsManualMode, Converter={StaticResource BoolToVis}}">
+
+            <Grid Margin="0,0,0,15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="עריכה ידנית" FontWeight="Bold" FontSize="20" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="חזור לאפשרויות" Command="{Binding CancelManualModeCommand}" Background="Transparent" Foreground="#0078D4" FontSize="15" BorderThickness="0" Cursor="Hand"/>
+            </Grid>
+
+            <ListBox ItemsSource="{Binding ManualLetters}" SelectedItem="{Binding SelectedLetter}" Background="Transparent" BorderThickness="0" HorizontalAlignment="Center" Margin="0,5,0,25" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel FlowDirection="RightToLeft" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="4,0"/>
+                        <Setter Property="Margin" Value="2"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="LetterBorder" BorderThickness="0,0,0,4" BorderBrush="Transparent" Background="Transparent" CornerRadius="4">
+                                        <ContentPresenter Margin="2,0"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="LetterBorder" Property="BorderBrush" Value="#0078D4"/>
+                                            <Setter TargetName="LetterBorder" Property="Background" Value="#F3F2F1"/>
+                                            <Setter Property="Foreground" Value="#0078D4"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="LetterBorder" Property="Background" Value="#F3F2F1"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding FullLetter}" FontSize="46" FontWeight="Bold"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border Background="#F3F2F1" CornerRadius="16" Padding="15">
+                <StackPanel>
+
+                    <WrapPanel FlowDirection="RightToLeft" HorizontalAlignment="Center" Margin="0,0,0,8">
+                        <ToggleButton Style="{StaticResource KeyboardToggleStyle}" IsChecked="{Binding IsDageshActive, Mode=OneWay}" Command="{Binding SetNikudCommand}" CommandParameter="DAGESH" ToolTip="דגש">
+                            <TextBlock FontSize="30" Margin="0,-4,0,0"><Run Text="{Binding CurrentBaseLetter, Mode=OneWay}"/><Run Text="ּ"/></TextBlock>
+                        </ToggleButton>
+
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsShinLetter, Converter={StaticResource BoolToVis}}">
+                            <ToggleButton Style="{StaticResource KeyboardToggleStyle}" IsChecked="{Binding IsShinActive, Mode=OneWay}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05C1;" ToolTip="נקודת שׁ">
+                                <TextBlock Text="{Binding KbShin}" FontSize="30" Margin="0,-4,0,0"/>
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource KeyboardToggleStyle}" IsChecked="{Binding IsSinActive, Mode=OneWay}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05C2;" ToolTip="נקודת שׂ">
+                                <TextBlock Text="{Binding KbSin}" FontSize="30" Margin="0,-4,0,0"/>
+                            </ToggleButton>
+                        </StackPanel>
+
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="CLEAR" ToolTip="נקה ניקוד">
+                            <TextBlock Text="❌" FontSize="18" Foreground="#D13438"/>
+                        </Button>
+                    </WrapPanel>
+
+                    <Border Height="1" Background="#E1DFDD" Margin="10,0,10,12"/>
+
+                    <WrapPanel FlowDirection="RightToLeft" HorizontalAlignment="Center">
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B8;" ToolTip="קמץ">
+                            <TextBlock Text="{Binding KbKamatz}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B7;" ToolTip="פתח">
+                            <TextBlock Text="{Binding KbPatach}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B5;" ToolTip="צירה">
+                            <TextBlock Text="{Binding KbTzere}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B6;" ToolTip="סגול">
+                            <TextBlock Text="{Binding KbSegol}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B4;" ToolTip="חיריק">
+                            <TextBlock Text="{Binding KbHirik}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B9;" ToolTip="חולם">
+                            <TextBlock Text="{Binding KbHolam}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05BB;" ToolTip="קובוץ">
+                            <TextBlock Text="{Binding KbKubutz}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B0;" ToolTip="שווא">
+                            <TextBlock Text="{Binding KbShva}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B3;" ToolTip="חטף קמץ">
+                            <TextBlock Text="{Binding KbHatafKamatz}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B2;" ToolTip="חטף פתח">
+                            <TextBlock Text="{Binding KbHatafPatach}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Style="{StaticResource KeyboardPadButton}" Command="{Binding SetNikudCommand}" CommandParameter="&#x05B1;" ToolTip="חטף סגול">
+                            <TextBlock Text="{Binding KbHatafSegol}" FontSize="30" Margin="0,-4,0,0"/>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Button Content="החל והמשך" Style="{StaticResource PrimaryButton}" Command="{Binding ApplyManualModeCommand}" FontSize="18" Height="50" Margin="0,25,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
