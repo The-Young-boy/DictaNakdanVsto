@@ -1,0 +1,42 @@
+name: Build VSTO
+on: [push, workflow_dispatch]
+
+# הרשאות אלו נדרשות כדי שה-Action יוכל ליצור תגית (Tag) ו-Release חדש
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore NuGet Packages
+      run: nuget restore DictaNakdanVsto/DictaNakdanVsto.csproj -SolutionDirectory .
+
+    - name: Build VSTO Project
+      run: msbuild DictaNakdanVsto/DictaNakdanVsto.csproj /p:Configuration=Release /t:Publish /p:DefineConstants="USEOFFICEINTEROP%3BVSTO40"
+
+    # שלב חדש: אריזת תוצרי ה-Publish לקובץ ZIP
+    - name: Zip VSTO Files
+      run: |
+        Compress-Archive -Path DictaNakdanVsto/bin/Release/app.publish/* -DestinationPath DictaNakdanVsto-Prerelease.zip
+      shell: powershell
+
+    # שלב חדש: יצירת Prerelease והעלאת ה-ZIP
+    - name: Create Prerelease
+      uses: softprops/action-gh-release@v2
+      with:
+        # יצירת שם תגית דינמי המבוסס על מספר הריצה כדי למנוע התנגשויות בכל Push
+        tag_name: prerelease-v${{ github.run_number }}
+        name: 'Prerelease Build #${{ github.run_number }}'
+        prerelease: true
+        files: DictaNakdanVsto-Prerelease.zip
